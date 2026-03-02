@@ -1,6 +1,6 @@
 # Use official Go image version 1.21
 # "as base" means we are naming this stage as "base"
-FROM golang:1.21 as base
+FROM golang:1.22.5-alpine AS base
 
 # Set working directory inside container to /app
 # All next commands will run inside this folder
