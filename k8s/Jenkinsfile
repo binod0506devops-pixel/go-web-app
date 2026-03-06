@@ -11,6 +11,8 @@ pipeline {
 
         stage('Run Container') {
             steps {
+                docker stop go-web-app-container || true
+                docker rm go-web-app-container || true
                 sh 'docker run -d -p 8081:8080 go-web-app || true'
             }
         }
