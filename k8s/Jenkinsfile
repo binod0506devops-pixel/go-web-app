@@ -3,12 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Clone Repository') {
-            steps {
-                git branch: 'main', url: 'https://github.com/binod0506devops-pixel/go-web-app.git'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t go-web-app .'
@@ -17,7 +11,7 @@ pipeline {
 
         stage('Run Container') {
             steps {
-                sh 'docker run -d -p 8081:8080 go-web-app'
+                sh 'docker run -d -p 8081:8080 go-web-app || true'
             }
         }
 
