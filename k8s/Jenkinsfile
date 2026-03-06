@@ -1,23 +1,61 @@
 pipeline {
-    agent any
 
-    stages {
+```
+// Run this pipeline on any available Jenkins node
+agent any
 
-        stage('Build Docker Image') {
-            steps {
-                sh "docker build -t go-web-app:${BUILD_NUMBER} ."
-            }
+stages {
+
+    // Stage 1: Build Docker Image from the Dockerfile in the repo
+    stage('Build Docker Image') {
+        steps {
+
+            // BUILD_NUMBER automatically increases with every Jenkins build
+            // This creates a unique image tag every time
+            sh "docker build -t go-web-app:${BUILD_NUMBER} ."
+
         }
-
-        stage('Run Container') {
-            steps {
-                sh '''
-                docker stop go-web-app-container || true
-                docker rm go-web-app-container || true
-                docker run -d -p 8081:8080 --name go-web-app-container go-web-app:${BUILD_NUMBER}
-                '''
-            }
-        }
-
     }
+
+    // Stage 2: Stop old container and run a new container
+    stage('Run Container') {
+        steps {
+            sh '''
+            echo "Checking for existing container..."
+
+            # Stop old container if running
+            echo "Stopping old container..."
+            docker stop go-web-app-container || echo "No running container found"
+
+            # Remove old container
+            echo "Removing old container..."
+            docker rm go-web-app-container || echo "No container to remove"
+
+            # Run new container
+            echo "Starting new container using image go-web-app:${BUILD_NUMBER}"
+            docker run -d -p 8081:8080 --name go-web-app-container go-web-app:${BUILD_NUMBER}
+
+            echo "Container deployed successfully"
+            '''
+        }
+    }
+
+    // Stage 3: Clean up container (for demo/learning)
+    stage('Cleanup Container') {
+        steps {
+            sh '''
+            echo "Stopping container after deployment (demo cleanup)..."
+            docker stop go-web-app-container || echo "Container already stopped"
+
+            echo "Deleting container..."
+            docker rm go-web-app-container || echo "Container already removed"
+
+            echo "Container cleanup completed"
+            '''
+        }
+    }
+
+}
+```
+
 }
