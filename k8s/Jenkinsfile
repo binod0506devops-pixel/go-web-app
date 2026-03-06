@@ -5,15 +5,17 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t go-web-app .'
+                sh "docker build -t go-web-app:${BUILD_NUMBER} ."
             }
         }
 
         stage('Run Container') {
             steps {
+                sh '''
                 docker stop go-web-app-container || true
                 docker rm go-web-app-container || true
-                sh 'docker run -d -p 8081:8080 go-web-app || true'
+                docker run -d -p 8081:8080 --name go-web-app-container go-web-app:${BUILD_NUMBER}
+                '''
             }
         }
 
