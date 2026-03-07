@@ -39,8 +39,8 @@ stages {
             '''
         }
     }
-// Delete container
-    Stage 3: Clean up container (for demo/learning)
+
+    // Stage 3: Clean up container (for demo/learning)
     stage('Cleanup Container') {
         steps {
             sh '''
